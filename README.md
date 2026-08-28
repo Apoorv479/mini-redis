@@ -301,7 +301,7 @@ A hash:
 Clone the repository and enter the project directory:
 
 ```bash
-git clone <your-repository-url>
+git clone <repository-url>
 cd mini-redis
 ```
 
