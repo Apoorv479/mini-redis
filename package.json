@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "A Redis-like in-memory database built from scratch with Node.js TCP and RESP.",
   "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "test": "node --test"
-  },
+ "scripts": {
+  "start": "node index.js",
+"test": "node --test tests/*.test.js"
+},
   "engines": {
     "node": ">=18"
   }
