@@ -7,19 +7,32 @@ const {
     getCommand
 } = require("./string");
 
+
 function executeCommand(db, command) {
+
     if (!command || command.length === 0) {
-        return errorResponse("ERR empty command");
+        return errorResponse(
+            "ERR empty command"
+        );
     }
 
-    const operation = command[0].toUpperCase();
+    const operation =
+        command[0].toUpperCase();
+
 
     switch (operation) {
+
         case "SET":
-            return setCommand(db, command);
+            return setCommand(
+                db,
+                command
+            );
 
         case "GET":
-            return getCommand(db, command);
+            return getCommand(
+                db,
+                command
+            );
 
         default:
             return errorResponse(
@@ -27,6 +40,7 @@ function executeCommand(db, command) {
             );
     }
 }
+
 
 module.exports = {
     executeCommand

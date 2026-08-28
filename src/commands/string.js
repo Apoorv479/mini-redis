@@ -1,9 +1,12 @@
 const {
     simpleString,
-    errorResponse
+    errorResponse,
+    bulkString
 } = require("../protocol/resp-response");
 
+
 function setCommand(db, args) {
+
     if (args.length !== 3) {
         return errorResponse(
             "ERR wrong number of arguments for SET"
@@ -18,7 +21,9 @@ function setCommand(db, args) {
     return simpleString("OK");
 }
 
+
 function getCommand(db, args) {
+
     if (args.length !== 2) {
         return errorResponse(
             "ERR wrong number of arguments for GET"
@@ -29,12 +34,14 @@ function getCommand(db, args) {
 
     const value = db.get(key);
 
+    // Key doesn't exist
     if (value === undefined) {
-        return "$-1\r\n";
+        return bulkString(null);
     }
 
-    return `$${Buffer.byteLength(value)}\r\n${value}\r\n`;
+    return bulkString(value);
 }
+
 
 module.exports = {
     setCommand,
