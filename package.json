@@ -1,0 +1,12 @@
+{
+  "name": "mini-redis",
+  "version": "1.0.0",
+  "description": "A Redis-like server built from scratch using Node.js TCP and RESP",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
