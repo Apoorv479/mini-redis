@@ -12,11 +12,9 @@ const client = net.createConnection(
         );
 
         send(
-            "SET",
-            "session",
-            "abc",
-            "EX",
-            "5"
+            "LPUSH",
+            "tasks",
+            "task1"
         );
     }
 );
@@ -61,40 +59,77 @@ client.on("data", (data) => {
     step++;
 
 
-    if (step === 1) {
+    switch (step) {
 
-        // Check TTL
-        send(
-            "TTL",
-            "session"
-        );
-
-    } else if (step === 2) {
-
-        // Check value
-        send(
-            "GET",
-            "session"
-        );
-
-    } else if (step === 3) {
-
-        console.log(
-            "Waiting 6 seconds..."
-        );
-
-        setTimeout(() => {
+        case 1:
 
             send(
-                "GET",
-                "session"
+                "RPUSH",
+                "tasks",
+                "task2",
+                "task3"
             );
 
-        }, 6000);
+            break;
 
-    } else {
 
-        client.end();
+        case 2:
+
+            send(
+                "LRANGE",
+                "tasks",
+                "0",
+                "-1"
+            );
+
+            break;
+
+
+        case 3:
+
+            send(
+                "LLEN",
+                "tasks"
+            );
+
+            break;
+
+
+        case 4:
+
+            send(
+                "LPOP",
+                "tasks"
+            );
+
+            break;
+
+
+        case 5:
+
+            send(
+                "RPOP",
+                "tasks"
+            );
+
+            break;
+
+
+        case 6:
+
+            send(
+                "LRANGE",
+                "tasks",
+                "0",
+                "-1"
+            );
+
+            break;
+
+
+        default:
+
+            client.end();
     }
 });
 

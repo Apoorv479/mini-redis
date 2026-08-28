@@ -5,19 +5,18 @@ class Database {
 
     set(key, value, expiresAt = null) {
         this.store.set(key, {
+            type: "string",
             value,
             expiresAt
         });
     }
 
-    get(key) {
-        const entry = this.getEntry(key);
-
-        if (!entry) {
-            return undefined;
-        }
-
-        return entry.value;
+    setEntry(key, type, value, expiresAt = null) {
+        this.store.set(key, {
+            type,
+            value,
+            expiresAt
+        });
     }
 
     getEntry(key) {
@@ -36,6 +35,16 @@ class Database {
         }
 
         return entry;
+    }
+
+    get(key) {
+        const entry = this.getEntry(key);
+
+        if (!entry) {
+            return undefined;
+        }
+
+        return entry.value;
     }
 
     has(key) {
@@ -62,20 +71,6 @@ class Database {
 
     clear() {
         this.store.clear();
-    }
-
-    cleanupExpired() {
-        for (
-            const [key, entry]
-            of this.store
-        ) {
-            if (
-                entry.expiresAt !== null &&
-                Date.now() >= entry.expiresAt
-            ) {
-                this.store.delete(key);
-            }
-        }
     }
 
     expire(key, milliseconds) {
@@ -151,6 +146,20 @@ class Database {
         }
 
         return remaining;
+    }
+
+    cleanupExpired() {
+        for (
+            const [key, entry]
+            of this.store
+        ) {
+            if (
+                entry.expiresAt !== null &&
+                Date.now() >= entry.expiresAt
+            ) {
+                this.store.delete(key);
+            }
+        }
     }
 }
 

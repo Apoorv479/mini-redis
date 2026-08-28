@@ -21,6 +21,15 @@ const {
     persistCommand
 } = require("./ttl");
 
+const {
+    lpushCommand,
+    rpushCommand,
+    lpopCommand,
+    rpopCommand,
+    llenCommand,
+    lrangeCommand
+} = require("./list");
+
 
 function executeCommand(db, command) {
 
@@ -221,6 +230,8 @@ case "PERSIST":
         db,
         command
     );
+
+    
        
         // TYPE
        
@@ -263,6 +274,53 @@ case "PERSIST":
             return integerResponse(
                 db.size()
             );
+
+case "LPUSH":
+
+    return lpushCommand(
+        db,
+        command
+    );
+
+
+case "RPUSH":
+
+    return rpushCommand(
+        db,
+        command
+    );
+
+
+case "LPOP":
+
+    return lpopCommand(
+        db,
+        command
+    );
+
+
+case "RPOP":
+
+    return rpopCommand(
+        db,
+        command
+    );
+
+
+case "LLEN":
+
+    return llenCommand(
+        db,
+        command
+    );
+
+
+case "LRANGE":
+
+    return lrangeCommand(
+        db,
+        command
+    );
 
 
        
