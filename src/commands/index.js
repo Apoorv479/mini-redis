@@ -38,6 +38,14 @@ const {
     scardCommand
 } = require("./set");
 
+const {
+    hsetCommand,
+    hgetCommand,
+    hgetallCommand,
+    hdelCommand,
+    hlenCommand
+} = require("./hash");
+
 
 function executeCommand(db, command) {
 
@@ -373,6 +381,47 @@ case "SCARD":
         command
     );
 
+// HASH COMMANDS
+
+
+case "HSET":
+
+    return hsetCommand(
+        db,
+        command
+    );
+
+
+case "HGET":
+
+    return hgetCommand(
+        db,
+        command
+    );
+
+
+case "HGETALL":
+
+    return hgetallCommand(
+        db,
+        command
+    );
+
+
+case "HDEL":
+
+    return hdelCommand(
+        db,
+        command
+    );
+
+
+case "HLEN":
+
+    return hlenCommand(
+        db,
+        command
+    );
 
        
         // KEYS

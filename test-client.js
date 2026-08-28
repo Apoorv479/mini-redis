@@ -12,11 +12,14 @@ const client = net.createConnection(
         );
 
         send(
-            "SADD",
-            "skills",
-            "Python",
-            "Redis",
-            "Node"
+            "HSET",
+            "user",
+            "name",
+            "Apoorv",
+            "age",
+            "24",
+            "role",
+            "engineer"
         );
     }
 );
@@ -62,104 +65,75 @@ client.on("data", (data) => {
 
     switch (step) {
 
-        // ============================
-        // Add duplicate member test
-        // ============================
-
         case 1:
 
             send(
-                "SADD",
-                "skills",
-                "Python",
-                "JavaScript"
+                "HGET",
+                "user",
+                "name"
             );
 
             break;
 
-
-        // ============================
-        // Get all members
-        // ============================
 
         case 2:
 
             send(
-                "SMEMBERS",
-                "skills"
+                "HGET",
+                "user",
+                "age"
             );
 
             break;
 
-
-        // ============================
-        // Check member exists
-        // ============================
 
         case 3:
 
             send(
-                "SISMEMBER",
-                "skills",
-                "Redis"
+                "HGET",
+                "user",
+                "email"
             );
 
             break;
 
-
-        // ============================
-        // Check missing member
-        // ============================
 
         case 4:
 
             send(
-                "SISMEMBER",
-                "skills",
-                "Java"
+                "HGETALL",
+                "user"
             );
 
             break;
 
-
-        // ============================
-        // Count members
-        // ============================
 
         case 5:
 
             send(
-                "SCARD",
-                "skills"
+                "HLEN",
+                "user"
             );
 
             break;
 
-
-        // ============================
-        // Remove member
-        // ============================
 
         case 6:
 
             send(
-                "SREM",
-                "skills",
-                "Node"
+                "HDEL",
+                "user",
+                "age"
             );
 
             break;
 
 
-        // ============================
-        // Check again
-        // ============================
-
         case 7:
 
             send(
-                "SMEMBERS",
-                "skills"
+                "HGETALL",
+                "user"
             );
 
             break;
