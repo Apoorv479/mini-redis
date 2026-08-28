@@ -13,6 +13,14 @@ const {
     decrCommand
 } = require("./string");
 
+const {
+    expireCommand,
+    pexpireCommand,
+    ttlCommand,
+    pttlCommand,
+    persistCommand
+} = require("./ttl");
+
 
 function executeCommand(db, command) {
 
@@ -175,7 +183,44 @@ function executeCommand(db, command) {
                 command
             );
 
+case "EXPIRE":
 
+    return expireCommand(
+        db,
+        command
+    );
+
+
+case "PEXPIRE":
+
+    return pexpireCommand(
+        db,
+        command
+    );
+
+
+case "TTL":
+
+    return ttlCommand(
+        db,
+        command
+    );
+
+
+case "PTTL":
+
+    return pttlCommand(
+        db,
+        command
+    );
+
+
+case "PERSIST":
+
+    return persistCommand(
+        db,
+        command
+    );
        
         // TYPE
        

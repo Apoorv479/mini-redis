@@ -11,7 +11,13 @@ const client = net.createConnection(
             "Connected to Mini Redis"
         );
 
-        send("PING");
+        send(
+            "SET",
+            "session",
+            "abc",
+            "EX",
+            "5"
+        );
     }
 );
 
@@ -21,7 +27,9 @@ function send(...args) {
     let command =
         `*${args.length}\r\n`;
 
-    for (const arg of args) {
+    for (
+        const arg of args
+    ) {
 
         command +=
             `$${Buffer.byteLength(arg)}\r\n`;
@@ -39,7 +47,7 @@ function send(...args) {
 }
 
 
-let testNumber = 0;
+let step = 0;
 
 
 client.on("data", (data) => {
@@ -50,61 +58,43 @@ client.on("data", (data) => {
     );
 
 
-    testNumber++;
+    step++;
 
 
-    switch (testNumber) {
+    if (step === 1) {
 
-        case 1:
-            send("ECHO", "Hello Redis");
-            break;
+        // Check TTL
+        send(
+            "TTL",
+            "session"
+        );
 
-        case 2:
-            send("SET", "name", "Apoorv");
-            break;
+    } else if (step === 2) {
 
-        case 3:
-            send("GET", "name");
-            break;
+        // Check value
+        send(
+            "GET",
+            "session"
+        );
 
-        case 4:
-            send("EXISTS", "name");
-            break;
+    } else if (step === 3) {
 
-        case 5:
-            send("SET", "counter", "10");
-            break;
+        console.log(
+            "Waiting 6 seconds..."
+        );
 
-        case 6:
-            send("INCR", "counter");
-            break;
+        setTimeout(() => {
 
-        case 7:
-            send("DECR", "counter");
-            break;
+            send(
+                "GET",
+                "session"
+            );
 
-        case 8:
-            send("TYPE", "name");
-            break;
+        }, 6000);
 
-        case 9:
-            send("DBSIZE");
-            break;
+    } else {
 
-        case 10:
-            send("KEYS", "*");
-            break;
-
-        case 11:
-            send("DEL", "name");
-            break;
-
-        case 12:
-            send("GET", "name");
-            break;
-
-        default:
-            client.end();
+        client.end();
     }
 });
 

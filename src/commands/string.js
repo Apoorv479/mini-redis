@@ -8,7 +8,7 @@ const {
 
 function setCommand(db, args) {
 
-    if (args.length !== 3) {
+    if (args.length < 3) {
         return errorResponse(
             "ERR wrong number of arguments for SET"
         );
@@ -17,7 +17,96 @@ function setCommand(db, args) {
     const key = args[1];
     const value = args[2];
 
-    db.set(key, value);
+    let expiresAt = null;
+
+    let i = 3;
+
+    while (i < args.length) {
+
+        const option =
+            args[i].toUpperCase();
+
+
+        // ==============================
+        // EX seconds
+        // ==============================
+
+        if (option === "EX") {
+
+            if (i + 1 >= args.length) {
+                return errorResponse(
+                    "ERR syntax error"
+                );
+            }
+
+            const seconds =
+                Number(args[i + 1]);
+
+            if (
+                !Number.isInteger(seconds) ||
+                seconds <= 0
+            ) {
+                return errorResponse(
+                    "ERR invalid expire time"
+                );
+            }
+
+            expiresAt =
+                Date.now() +
+                seconds * 1000;
+
+            i += 2;
+
+            continue;
+        }
+
+
+        // ==============================
+        // PX milliseconds
+        // ==============================
+
+        if (option === "PX") {
+
+            if (i + 1 >= args.length) {
+                return errorResponse(
+                    "ERR syntax error"
+                );
+            }
+
+            const milliseconds =
+                Number(args[i + 1]);
+
+            if (
+                !Number.isInteger(milliseconds) ||
+                milliseconds <= 0
+            ) {
+                return errorResponse(
+                    "ERR invalid expire time"
+                );
+            }
+
+            expiresAt =
+                Date.now() +
+                milliseconds;
+
+            i += 2;
+
+            continue;
+        }
+
+
+        return errorResponse(
+            "ERR syntax error"
+        );
+    }
+
+
+    db.set(
+        key,
+        value,
+        expiresAt
+    );
+
 
     return simpleString("OK");
 }
@@ -33,17 +122,24 @@ function getCommand(db, args) {
 
     const key = args[1];
 
-    const value = db.get(key);
+    const value =
+        db.get(key);
+
 
     if (value === undefined) {
         return bulkString(null);
     }
 
+
     return bulkString(value);
 }
 
 
-function incrementCommand(db, args, amount) {
+function incrementCommand(
+    db,
+    args,
+    amount
+) {
 
     if (args.length !== 2) {
         return errorResponse(
@@ -53,9 +149,10 @@ function incrementCommand(db, args, amount) {
 
     const key = args[1];
 
-    const existingValue = db.get(key);
+    const existingValue =
+        db.get(key);
 
-    // Key doesn't exist
+
     if (existingValue === undefined) {
 
         db.set(
@@ -63,13 +160,17 @@ function incrementCommand(db, args, amount) {
             String(amount)
         );
 
-        return integerResponse(amount);
+        return integerResponse(
+            amount
+        );
     }
 
 
-    // Check integer
-    if (!/^-?\d+$/.test(existingValue)) {
-
+    if (
+        !/^-?\d+$/.test(
+            existingValue
+        )
+    ) {
         return errorResponse(
             "ERR value is not an integer or out of range"
         );
@@ -78,6 +179,7 @@ function incrementCommand(db, args, amount) {
 
     const currentValue =
         Number(existingValue);
+
 
     const newValue =
         currentValue + amount;
@@ -89,7 +191,9 @@ function incrementCommand(db, args, amount) {
     );
 
 
-    return integerResponse(newValue);
+    return integerResponse(
+        newValue
+    );
 }
 
 
