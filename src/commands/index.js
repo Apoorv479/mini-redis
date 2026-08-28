@@ -30,6 +30,14 @@ const {
     lrangeCommand
 } = require("./list");
 
+const {
+    saddCommand,
+    sremCommand,
+    smembersCommand,
+    sismemberCommand,
+    scardCommand
+} = require("./set");
+
 
 function executeCommand(db, command) {
 
@@ -318,6 +326,49 @@ case "LLEN":
 case "LRANGE":
 
     return lrangeCommand(
+        db,
+        command
+    );
+
+    
+// SET COMMANDS
+
+
+case "SADD":
+
+    return saddCommand(
+        db,
+        command
+    );
+
+
+case "SREM":
+
+    return sremCommand(
+        db,
+        command
+    );
+
+
+case "SMEMBERS":
+
+    return smembersCommand(
+        db,
+        command
+    );
+
+
+case "SISMEMBER":
+
+    return sismemberCommand(
+        db,
+        command
+    );
+
+
+case "SCARD":
+
+    return scardCommand(
         db,
         command
     );

@@ -12,9 +12,11 @@ const client = net.createConnection(
         );
 
         send(
-            "LPUSH",
-            "tasks",
-            "task1"
+            "SADD",
+            "skills",
+            "Python",
+            "Redis",
+            "Node"
         );
     }
 );
@@ -55,73 +57,109 @@ client.on("data", (data) => {
         data.toString()
     );
 
-
     step++;
 
 
     switch (step) {
 
+        // ============================
+        // Add duplicate member test
+        // ============================
+
         case 1:
 
             send(
-                "RPUSH",
-                "tasks",
-                "task2",
-                "task3"
+                "SADD",
+                "skills",
+                "Python",
+                "JavaScript"
             );
 
             break;
 
+
+        // ============================
+        // Get all members
+        // ============================
 
         case 2:
 
             send(
-                "LRANGE",
-                "tasks",
-                "0",
-                "-1"
+                "SMEMBERS",
+                "skills"
             );
 
             break;
 
+
+        // ============================
+        // Check member exists
+        // ============================
 
         case 3:
 
             send(
-                "LLEN",
-                "tasks"
+                "SISMEMBER",
+                "skills",
+                "Redis"
             );
 
             break;
 
+
+        // ============================
+        // Check missing member
+        // ============================
 
         case 4:
 
             send(
-                "LPOP",
-                "tasks"
+                "SISMEMBER",
+                "skills",
+                "Java"
             );
 
             break;
 
+
+        // ============================
+        // Count members
+        // ============================
 
         case 5:
 
             send(
-                "RPOP",
-                "tasks"
+                "SCARD",
+                "skills"
             );
 
             break;
 
 
+        // ============================
+        // Remove member
+        // ============================
+
         case 6:
 
             send(
-                "LRANGE",
-                "tasks",
-                "0",
-                "-1"
+                "SREM",
+                "skills",
+                "Node"
+            );
+
+            break;
+
+
+        // ============================
+        // Check again
+        // ============================
+
+        case 7:
+
+            send(
+                "SMEMBERS",
+                "skills"
             );
 
             break;
