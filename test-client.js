@@ -11,135 +11,100 @@ const client = net.createConnection(
             "Connected to Mini Redis"
         );
 
-        testSet();
+        send("PING");
     }
 );
 
 
+function send(...args) {
 
-// SET
+    let command =
+        `*${args.length}\r\n`;
 
+    for (const arg of args) {
 
-function testSet() {
+        command +=
+            `$${Buffer.byteLength(arg)}\r\n`;
+
+        command +=
+            `${arg}\r\n`;
+    }
 
     console.log(
-        "\n--- SET TEST ---"
+        "Sending:",
+        args
     );
-
-    const command =
-        "*3\r\n" +
-        "$3\r\n" +
-        "SET\r\n" +
-        "$4\r\n" +
-        "name\r\n" +
-        "$6\r\n" +
-        "Apoorv\r\n";
 
     client.write(command);
 }
 
 
+let testNumber = 0;
 
-// GET existing key
-
-
-function testGetExisting() {
-
-    console.log(
-        "\n--- GET EXISTING KEY ---"
-    );
-
-    const command =
-        "*2\r\n" +
-        "$3\r\n" +
-        "GET\r\n" +
-        "$4\r\n" +
-        "name\r\n";
-
-    client.write(command);
-}
-
-
-
-// GET missing key
-
-
-function testGetMissing() {
-
-    console.log(
-        "\n--- GET MISSING KEY ---"
-    );
-
-    const command =
-        "*2\r\n" +
-        "$3\r\n" +
-        "GET\r\n" +
-        "$3\r\n" +
-        "age\r\n";
-
-    client.write(command);
-}
-
-
-
-// Invalid command
-
-
-function testInvalidCommand() {
-
-    console.log(
-        "\n--- INVALID COMMAND ---"
-    );
-
-    const command =
-        "*2\r\n" +
-        "$6\r\n" +
-        "DELETE\r\n" +
-        "\r\n" +
-        "$4\r\n" +
-        "name\r\n";
-
-    client.write(command);
-}
-
-
-
-// Response handler
-
-
-let step = 0;
 
 client.on("data", (data) => {
 
-    const response =
-        data.toString();
-
     console.log(
-        "Server response:"
+        "Response:",
+        data.toString()
     );
 
-    console.log(response);
 
-    step++;
+    testNumber++;
 
-    if (step === 1) {
 
-        // SET successful
-        testGetExisting();
+    switch (testNumber) {
 
-    } else if (step === 2) {
+        case 1:
+            send("ECHO", "Hello Redis");
+            break;
 
-        // Existing key
-        testGetMissing();
+        case 2:
+            send("SET", "name", "Apoorv");
+            break;
 
-    } else if (step === 3) {
+        case 3:
+            send("GET", "name");
+            break;
 
-        // Missing key
-        testInvalidCommand();
+        case 4:
+            send("EXISTS", "name");
+            break;
 
-    } else {
+        case 5:
+            send("SET", "counter", "10");
+            break;
 
-        client.end();
+        case 6:
+            send("INCR", "counter");
+            break;
+
+        case 7:
+            send("DECR", "counter");
+            break;
+
+        case 8:
+            send("TYPE", "name");
+            break;
+
+        case 9:
+            send("DBSIZE");
+            break;
+
+        case 10:
+            send("KEYS", "*");
+            break;
+
+        case 11:
+            send("DEL", "name");
+            break;
+
+        case 12:
+            send("GET", "name");
+            break;
+
+        default:
+            client.end();
     }
 });
 

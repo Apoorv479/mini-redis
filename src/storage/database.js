@@ -19,12 +19,16 @@ class Database {
         return this.store.delete(key);
     }
 
-    clear() {
-        this.store.clear();
+    keys() {
+        return [...this.store.keys()];
     }
 
     size() {
         return this.store.size;
+    }
+
+    clear() {
+        this.store.clear();
     }
 }
 
