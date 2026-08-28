@@ -6,50 +6,57 @@ const client = net.createConnection(
         port: 8000
     },
     () => {
-
         console.log("Connected to Mini Redis");
 
-        // RESP encoded command
-        //
-        // SET name Apoorv
-        //
-        const command =
-            "*3\r\n" +
-            "$3\r\n" +
-            "SET\r\n" +
-            "$4\r\n" +
-            "name\r\n" +
-            "$6\r\n" +
-            "Apoorv\r\n";
-
-        console.log("Sending:");
-        console.log(command);
-
-        client.write(command);
+        sendSetCommand();
     }
 );
 
+function sendSetCommand() {
+    const command =
+        "*3\r\n" +
+        "$3\r\n" +
+        "SET\r\n" +
+        "$4\r\n" +
+        "name\r\n" +
+        "$6\r\n" +
+        "Apoorv\r\n";
+
+    console.log("Sending SET...");
+    client.write(command);
+}
 
 client.on("data", (data) => {
-
-    console.log("Response from server:");
-
+    console.log("Server response:");
     console.log(data.toString());
 
-    client.end();
+    // SET ke baad GET bhejo
+    if (data.toString() === "+OK\r\n") {
+        sendGetCommand();
+    } else {
+        client.end();
+    }
 });
 
+function sendGetCommand() {
+    const command =
+        "*2\r\n" +
+        "$3\r\n" +
+        "GET\r\n" +
+        "$4\r\n" +
+        "name\r\n";
+
+    console.log("Sending GET...");
+    client.write(command);
+}
 
 client.on("error", (error) => {
-
     console.error(
         "Client error:",
         error.message
     );
 });
 
-
 client.on("close", () => {
-
     console.log("Connection closed");
 });
